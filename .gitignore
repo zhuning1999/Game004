@@ -1,0 +1,23 @@
+# Unreal Engine
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+Build/
+Content/CT_Components
+Content/AnimStarterPack
+Content/FreeAnimsMixPack
+Content/Walk_cycle_AnimsSet
+
+# Visual Studio / Rider
+.vs/
+.idea/
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.opensdf
+*.sdf
+
+# OS
+.DS_Store
+Thumbs.db
