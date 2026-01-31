@@ -31,8 +31,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void OnPossess(APawn* InPawn) override;
 
-	
 	virtual void OnRep_Pawn() override;
+
+	ATestProjectController();
 
 	UFUNCTION(BlueprintPure)
 	int32 GetCurrentAmmo() const { return CachedCurrentAmmo; }
@@ -40,9 +41,9 @@ public:
 	int32 GetMaxAmmo() const { return CachedMaxAmmo; }
 	
 protected:
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Weapon, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Replicated)
 	int32 CachedCurrentAmmo = -1;
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Weapon, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Replicated)
 	int32 CachedMaxAmmo = 0;
 	AWeaponBase* CachedWeapon = nullptr;
 
@@ -59,4 +60,6 @@ public:
 	// Aiming UI
 	UFUNCTION(BlueprintImplementableEvent, Category = "Aiming")
 	void SetAimingUI(bool bAiming);
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

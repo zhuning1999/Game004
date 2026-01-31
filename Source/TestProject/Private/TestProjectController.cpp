@@ -5,7 +5,8 @@
 #include "WeaponBase.h"
 #include "TestProject/TestProjectCharacter.h"
 #include "Blueprint/UserWidget.h"
-#include <ostream>
+#include "Net/UnrealNetwork.h"
+#include "ostream"
 
 void ATestProjectController::OnWeaponAmmoChanged(int32 CurrentAmmo, int32 MaxAmmo)
 {
@@ -75,6 +76,11 @@ void ATestProjectController::OnRep_Pawn()
 	OnWeaponChanged(MyCharacter->GetCurrentWeapon());
 }
 
+ATestProjectController::ATestProjectController()
+{
+	bReplicates = true;
+}
+
 void ATestProjectController::BeginPlay()
 {
 	PlayerCameraManager->ViewPitchMin = -30.f;
@@ -94,4 +100,11 @@ void ATestProjectController::BeginPlay()
 		}
 	}
 
+}
+
+void ATestProjectController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ATestProjectController, CachedCurrentAmmo);
+	DOREPLIFETIME(ATestProjectController, CachedMaxAmmo);
 }
