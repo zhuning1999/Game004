@@ -6,6 +6,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "EnemyAIController.h"
 #include <TestProject/TestProjectCharacter.h>
+#include <Kismet/GameplayStatics.h>
 
 // Sets default values
 AEnemy::AEnemy()
@@ -43,15 +44,24 @@ void AEnemy::SetTargetPawn(APawn* NewTargetPawn)
 }
 
 
-void AEnemy::OnHit()
+void AEnemy::OnHit(AActor* InstigatorActor)
 {
 	if (!HasAuthority())
 	{
 		return;
 	}
 
+	if (this->GetController() == nullptr)
+	{
+		return;
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("I was hit by %s"), *InstigatorActor->GetName());
+
+	// 通知所有附近的敌人
+	AlertNearbyEnemies(InstigatorActor);
+
 	Health -= Health > 0 ? 50 : 0;
-	
 	if (Health <= 0)
 	{
 		Die();
@@ -105,6 +115,10 @@ void AEnemy::PerformAttack()
 		APawn* PlayerPawn = TargetPawn;
 		if (PlayerPawn)
 		{
+			// 转头看向玩家
+			FVector LookDir = TargetPawn->GetActorLocation() - GetActorLocation();
+			FRotator LookRot = LookDir.Rotation();
+			SetActorRotation(FRotator(0.f, LookRot.Yaw, 0.f));
 			if (ATestProjectCharacter* PlayerCharacter = Cast<ATestProjectCharacter>(PlayerPawn))
 			{
 				if (!AttackMontage)
@@ -122,6 +136,27 @@ void AEnemy::PerformAttack()
 				AnimInstance->Montage_Play(AttackMontage);
 			}
 		}
+	}
+}
+
+void AEnemy::AlertNearbyEnemies(AActor* InstigatorActor)
+{
+	TArray<AActor*> NearbyEnemies;
+	float AlertRadius = 1000.f;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEnemy::StaticClass(), NearbyEnemies);
+	for (AActor* Actor : NearbyEnemies)
+	{
+		if (FVector::Dist(Actor->GetActorLocation(), GetActorLocation()) <= AlertRadius)
+		{
+			AEnemy* Enemy = Cast<AEnemy>(Actor);
+			auto emctrl = Cast<AEnemyAIController>(Enemy->GetController());
+			emctrl->OnEnemyAIAttack.Broadcast(InstigatorActor);
+		}
+
+		// 转头看向攻击者
+		FVector LookDirection = InstigatorActor->GetActorLocation() - Actor->GetActorLocation();
+		FRotator NewRotation = LookDirection.Rotation();
+		Actor->SetActorRotation(FRotator(0.f, NewRotation.Yaw, 0.f));
 	}
 }
 

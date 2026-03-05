@@ -31,7 +31,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void OnPossess(APawn* InPawn) override;
 
-	virtual void OnRep_Pawn() override;
+	//virtual void OnRep_Pawn() override;
 
 	ATestProjectController();
 
@@ -41,9 +41,9 @@ public:
 	int32 GetMaxAmmo() const { return CachedMaxAmmo; }
 	
 protected:
-	UPROPERTY(Replicated)
+	UPROPERTY(VisibleAnywhere)
 	int32 CachedCurrentAmmo = -1;
-	UPROPERTY(Replicated)
+	UPROPERTY(VisibleAnywhere)
 	int32 CachedMaxAmmo = 0;
 	AWeaponBase* CachedWeapon = nullptr;
 

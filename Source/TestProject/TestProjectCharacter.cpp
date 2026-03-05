@@ -98,7 +98,7 @@ void ATestProjectCharacter::BeginPlay()
 
 	if (Weapons.Num() > 0)
 	{
-		EquipWeapon(Weapons[0]);
+		EquipWeapon(WeaponIndex);
 	}
 }
 
@@ -168,6 +168,9 @@ void ATestProjectCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 		// Crouching
 		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Triggered, this, &ATestProjectCharacter::Crouch);
 		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Completed, this, &ATestProjectCharacter::UnCrouch);
+
+		// Change Weapon
+		EnhancedInputComponent->BindAction(ChangeWeaponAction, ETriggerEvent::Started, this, &ATestProjectCharacter::ChangeWeapon);
 	}
 	else
 	{
@@ -341,19 +344,26 @@ void ATestProjectCharacter::UnCrouch(const FInputActionValue& Value)
 	// UE_LOG(LogTemplateCharacter, Log, TEXT("UnCrouch action triggered"));
 }
 
-void ATestProjectCharacter::EquipWeapon(AWeaponBase* NewWeapon)
+void ATestProjectCharacter::EquipWeapon(int8 index)
 {
 	if (CurrentWeapon)
 	{
 		CurrentWeapon->OnUnEquip();
 	}
-	CurrentWeapon = NewWeapon;
+	CurrentWeapon = Weapons[index];
 	if (CurrentWeapon)
 	{
 		CurrentWeapon->OnEquip(this->GetMesh());
 	}
 	CurrentWeapon->SetFireSource(this);
 	OnCurrentWeaponChanged.Broadcast(CurrentWeapon);
+}
+
+void ATestProjectCharacter::ChangeWeapon(const FInputActionValue& Value)
+{
+	if (Weapons.Num() == 0) return;
+	WeaponIndex = (WeaponIndex + 1) % Weapons.Num();
+	EquipWeapon(WeaponIndex);
 }
 
 void ATestProjectCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

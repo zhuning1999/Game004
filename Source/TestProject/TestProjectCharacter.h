@@ -65,6 +65,10 @@ class ATestProjectCharacter : public ACharacter, public IFireSourceInterface
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* FireAction;
 
+	/** Change Weapon Input Action */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* ChangeWeaponAction;
+
 	// Weapon properties
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Weapon, meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<AWeaponBase> WeaponClass = AWeaponBase::StaticClass();
@@ -74,6 +78,9 @@ class ATestProjectCharacter : public ACharacter, public IFireSourceInterface
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Weapon, meta = (AllowPrivateAccess = "true"))
 	TArray<AWeaponBase*> Weapons;
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+	int8 WeaponIndex = 0;
+
 public:
 	UPROPERTY(BlueprintAssignable)
 	FOnCurrentWeaponChanged OnCurrentWeaponChanged; // 监听事件：切换武器
@@ -131,7 +138,10 @@ protected:
 	void UnCrouch(const FInputActionValue& Value);
 
 	/** Called for equip weapon input */
-	void EquipWeapon(AWeaponBase* NewWeapon);
+	void EquipWeapon(int8 index);
+
+	/* Called for change weapon input */
+	void ChangeWeapon(const FInputActionValue& Value);
 
 	// Replication
 	virtual void GetLifetimeReplicatedProps(

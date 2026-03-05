@@ -104,7 +104,8 @@ void AWeaponBase::FireFeedback(bool bWasSuccessful, AActor* HitActor)
 	{
 		// UE_LOG(LogTemp, Log, TEXT("Hit Pawn: %s"), *GetNameSafe(HitActor));
 		AEnemy* HitEnemy = Cast<AEnemy>(HitActor);
-		HitEnemy->OnHit();
+		// 这里先让敌人追枪，反正枪不离手
+		HitEnemy->OnHit(this);
 	}
 	else
 	{
@@ -167,8 +168,6 @@ void AWeaponBase::OnUnEquip()
 
 void AWeaponBase::OnRep_Ammo()
 {
-	UE_LOG(LogTemp, Warning, TEXT("[CLIENT] OnRep_CurrentAmmo Fired: %d / %d"),
-		CurrentAmmo, MaxAmmo);
 	OnAmmoChanged.Broadcast(CurrentAmmo, MaxAmmo);
 }
 

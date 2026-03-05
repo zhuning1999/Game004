@@ -12,19 +12,6 @@ void ATestProjectController::OnWeaponAmmoChanged(int32 CurrentAmmo, int32 MaxAmm
 {
 	CachedCurrentAmmo = CurrentAmmo;
 	CachedMaxAmmo = MaxAmmo;
-
-	OnAmmoUIChanged.Broadcast(CachedCurrentAmmo, CachedMaxAmmo);
-
-	GEngine->AddOnScreenDebugMessage(
-		-1,
-		3.f,
-		FColor::Cyan,
-		FString::Printf(
-			TEXT("[PC] Ammo Sync: %d / %d"),
-			CachedCurrentAmmo,
-			CachedMaxAmmo
-		)
-	);
 }
 
 void ATestProjectController::OnWeaponChanged(AWeaponBase* NewWeapon)
@@ -61,20 +48,20 @@ void ATestProjectController::OnPossess(APawn* InPawn)
 	} 
 }
 
-void ATestProjectController::OnRep_Pawn()
-{
-	Super::OnRep_Pawn();
-
-	ATestProjectCharacter* MyCharacter = Cast<ATestProjectCharacter>(GetPawn());
-	if (!MyCharacter)
-		return;
-
-	MyCharacter->OnCurrentWeaponChanged.RemoveAll(this);
-	MyCharacter->OnCurrentWeaponChanged.AddDynamic(this, &ATestProjectController::OnWeaponChanged);
-
-	// 同步一次当前武器
-	OnWeaponChanged(MyCharacter->GetCurrentWeapon());
-}
+//void ATestProjectController::OnRep_Pawn()
+//{
+//	Super::OnRep_Pawn();
+//
+//	ATestProjectCharacter* MyCharacter = Cast<ATestProjectCharacter>(GetPawn());
+//	if (!MyCharacter)
+//		return;
+//
+//	MyCharacter->OnCurrentWeaponChanged.RemoveAll(this);
+//	MyCharacter->OnCurrentWeaponChanged.AddDynamic(this, &ATestProjectController::OnWeaponChanged);
+//
+//	// 同步一次当前武器
+//	OnWeaponChanged(MyCharacter->GetCurrentWeapon());
+//}
 
 ATestProjectController::ATestProjectController()
 {
@@ -105,6 +92,6 @@ void ATestProjectController::BeginPlay()
 void ATestProjectController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(ATestProjectController, CachedCurrentAmmo);
-	DOREPLIFETIME(ATestProjectController, CachedMaxAmmo);
+	/*DOREPLIFETIME(ATestProjectController, CachedCurrentAmmo);
+	DOREPLIFETIME(ATestProjectController, CachedMaxAmmo);*/
 }

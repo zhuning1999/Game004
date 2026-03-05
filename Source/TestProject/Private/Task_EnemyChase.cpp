@@ -1,0 +1,9 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "Task_EnemyChase.h"
+
+EStateTreeRunStatus UTask_EnemyChase::Tick(FStateTreeExecutionContext& Context, const float DeltaTime)
+{
+    return EStateTreeRunStatus();
+}

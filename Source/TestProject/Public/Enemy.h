@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "AIController.h"
 #include "Net/UnrealNetwork.h"
+#include "ST_Condition_HasTarget.h"
 #include "Enemy.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnEnemyDied);
@@ -70,7 +71,7 @@ public:
 
 	// Function to handle hit event
 	UFUNCTION(BlueprintCallable, Category = "Enemy")
-	void OnHit();
+	void OnHit(AActor* InstigatorActor);
 
 	UFUNCTION()
 	int32 GetAttackRange() const { return AttackRange; }
@@ -84,6 +85,9 @@ public:
 
 	// Perform attack
 	void PerformAttack();
+
+	// 团队协作
+	void AlertNearbyEnemies(AActor* InstigatorActor);
 
 protected:
 	// Function to handle death
