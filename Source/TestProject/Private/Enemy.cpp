@@ -133,7 +133,15 @@ void AEnemy::PerformAttack()
 					UE_LOG(LogTemp, Warning, TEXT("AnimInstance is null"));
 					return;
 				}
-				AnimInstance->Montage_Play(AttackMontage);
+				float result = AnimInstance->Montage_Play(AttackMontage);
+				//if (result <= 0.f)
+				//{
+				//	UE_LOG(LogTemp, Warning, TEXT("Failed to play attack montage"));
+				//}
+				//else
+				//{
+				//	UE_LOG(LogTemp, Log, TEXT("Playing attack montage"));
+				//}
 			}
 		}
 	}
